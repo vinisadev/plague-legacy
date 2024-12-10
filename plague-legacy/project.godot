@@ -11,8 +11,17 @@ config_version=5
 [application]
 
 config/name="Plague Legacy"
+run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Global="*res://scripts/global/global.gd"
+
+[debug]
+
+file_logging/enable_file_logging=true
 
 [rendering]
 
