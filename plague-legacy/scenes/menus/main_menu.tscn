@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://bdjr4ld6hld1j"]
+[gd_scene load_steps=3 format=3 uid="uid://bdjr4ld6hld1j"]
 
 [ext_resource type="Script" path="res://scripts/menus/main_menu.gd" id="1_jtxkx"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_3pv8x"]
+font_size = 131
 
 [node name="MainMenu" type="Node2D"]
 script = ExtResource("1_jtxkx")
@@ -24,11 +27,12 @@ size_flags_vertical = 4
 text = "Quit"
 
 [node name="Label" type="Label" parent="."]
-offset_left = 492.0
-offset_top = 210.0
-offset_right = 601.0
-offset_bottom = 233.0
+offset_left = 119.0
+offset_top = 61.0
+offset_right = 1008.0
+offset_bottom = 241.0
 text = "Plague Legacy"
+label_settings = SubResource("LabelSettings_3pv8x")
 
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
