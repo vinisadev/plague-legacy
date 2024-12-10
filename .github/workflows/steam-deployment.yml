@@ -91,7 +91,7 @@ jobs:
           depot2Path: build/linux
           releaseBranch: beta
 
-  discordNotification:
+  trenchCrowsDiscordNotification:
     name: Send Trench Crows Discord Notification
     needs: [deployToSteam]
     runs-on: ubuntu-latest
@@ -108,7 +108,7 @@ jobs:
           username: Steam
           avatar_url: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png
 
-  discordNotification:
+  rustchanDiscordNotification:
     name: Send Rustchan Discord Notification
     needs: [deployToSteam]
     runs-on: ubuntu-latest
