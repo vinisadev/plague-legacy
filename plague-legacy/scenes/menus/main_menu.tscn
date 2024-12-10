@@ -23,5 +23,12 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Quit"
 
+[node name="Label" type="Label" parent="."]
+offset_left = 492.0
+offset_top = 210.0
+offset_right = 601.0
+offset_bottom = 233.0
+text = "Plague Legacy"
+
 [connection signal="pressed" from="PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
