@@ -1,0 +1,126 @@
+name: "Publish to Steam"
+on: push
+
+# NOTE: If your `project.godot` is at the repository root, set `PROJECT_PATH` below to ".".
+
+env:
+  GODOT_VERSION: 4.3
+  EXPORT_NAME: plague-legacy
+  PROJECT_PATH: plague-legacy
+
+jobs:
+  export-windows:
+    name: Windows Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mkdir -v -p ~/.config/
+          mv /root/.config/godot ~/.config/godot
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Windows Build
+        run: |
+          mkdir -v -p build/windows
+          EXPORT_DIR="$(readlink -f build)"
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Windows Desktop" "$EXPORT_DIR/windows/$EXPORT_NAME.exe"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: build/windows
+
+  export-linux:
+    name: Linux Export
+    runs-on: ubuntu-20.04
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Setup
+        run: |
+          mkdir -v -p ~/.local/share/godot/export_templates/
+          mv /root/.local/share/godot/export_templates/${GODOT_VERSION}.stable ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+      - name: Linux Build
+        run: |
+          mkdir -v -p build/linux
+          EXPORT_DIR="$(readlink -f build)"
+          cd $PROJECT_PATH
+          godot --headless --verbose --export-release "Linux" "$EXPORT_DIR/linux/$EXPORT_NAME.x86_64"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: build/linux
+
+  deployToSteam:
+    name: Deploy to Steam
+    needs: [export-windows, export-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows
+          path: build/windows
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux
+          path: build/linux
+      - uses: game-ci/steam-deploy@v3
+        with:
+          username: ${{ secrets.STEAM_USERNAME }}
+          configVdf: ${{ secrets.STEAM_CONFIG_VDF }}
+          appId: ${{ secrets.STEAM_APP_ID }}
+          depot1Path: build/windows
+          depot2Path: build/linux
+          releaseBranch: beta
+
+  discordNotification:
+    name: Send Trench Crows Discord Notification
+    needs: [deployToSteam]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trench Crows Discord Status Notification
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.TRENCH_CROWS_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          title: "Published Beta"
+          description: "Published new Plague Legacy BETA Update"
+          nofail: false
+          nodetail: false
+          username: Steam
+          avatar_url: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png
+
+  discordNotification:
+    name: Send Rustchan Discord Notification
+    needs: [deployToSteam]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rustchan Discord Status Notification
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.RUSTCHAN_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          title: "Published Beta"
+          description: "Published new Plague Legacy BETA Update"
+          nofail: false
+          nodetail: false
+          username: Steam
+          avatar_url: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png
