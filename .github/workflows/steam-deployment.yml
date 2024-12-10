@@ -108,19 +108,19 @@ jobs:
           username: Steam
           avatar_url: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png
 
-  rustchanDiscordNotification:
-    name: Send Rustchan Discord Notification
-    needs: [deployToSteam]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Rustchan Discord Status Notification
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.RUSTCHAN_WEBHOOK_URL }}
-          status: ${{ job.status }}
-          title: "Published Beta"
-          description: "Published new Plague Legacy BETA Update"
-          nofail: false
-          nodetail: false
-          username: Steam
-          avatar_url: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png
+  # rustchanDiscordNotification:
+  #   name: Send Rustchan Discord Notification
+  #   needs: [deployToSteam]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Rustchan Discord Status Notification
+  #       uses: sarisia/actions-status-discord@v1
+  #       with:
+  #         webhook: ${{ secrets.RUSTCHAN_WEBHOOK_URL }}
+  #         status: ${{ job.status }}
+  #         title: "Published Beta"
+  #         description: "Published new Plague Legacy BETA Update"
+  #         nofail: false
+  #         nodetail: false
+  #         username: Steam
+  #         avatar_url: https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png
